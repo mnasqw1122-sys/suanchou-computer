@@ -1,15 +1,15 @@
 # SuanChou Computer / 算筭计算机
 
 > **Two states can express everything.**
-> **—  = ON (1)  &emsp;  |  = OFF (0)**
+> **—  = ON (1)     |  = OFF (0)**
 >
 > Bridging ancient Chinese counting rods and modern computing. Bridging Chinese characters and binary logic. A proof of concept that *glyph-level understanding can be modeled as computation*.
 
----
+***
 
-[中文](#算筭计算机) &emsp; | &emsp; [English](#suanchou-computer) &emsp; | &emsp; [Quick Start](#quick-start) &emsp; | &emsp; [License](#license)
+[中文](#算筭计算机)   |   [English](#suanchou-computer)   |   [Quick Start](#quick-start)   |   [License](#license)
 
----
+***
 
 ## 算筭计算机
 
@@ -35,21 +35,21 @@
 
 **3. 「理解」可以建模为「计算」。** 当人眼看到一个汉字时，视觉系统将其笔画转化为神经信号，大脑对这些信号进行模式匹配、联想、推断——这一整套「理解」流程，完全可以用算筭计算来模拟：模式匹配 → 位运算（AND/OR/XOR），语义联想 → 索引查找，关联推断 → 相似度计算。
 
-**4. 算筭码可以原生编程。** 如果数据本身就是 `—` 和 `|`，那就直接在这个层面上写程序。不需要先把算筭码翻译成整数、再翻译成字符串、再翻译回笔画——直接操作算筭信号。ROD_CHAR 直接识别字符，ROD_CMP 直接比较字形，ROD_TAG 直接查询语义。
+**4. 算筭码可以原生编程。** 如果数据本身就是 `—` 和 `|`，那就直接在这个层面上写程序。不需要先把算筭码翻译成整数、再翻译成字符串、再翻译回笔画——直接操作算筭信号。ROD\_CHAR 直接识别字符，ROD\_CMP 直接比较字形，ROD\_TAG 直接查询语义。
 
 ### 代码做了什么
 
-这是一个完整的概念验证系统（~2500 行 Python），包含六个层次：
+这是一个完整的概念验证系统（\~2500 行 Python），包含六个层次：
 
-| 层次 | 文件 | 功能 |
-|------|------|------|
-| 物理层 | `counting_rod_computer.py` | — 和 | 的定义，加减乘除、位运算 |
-| 编码层 | `stroke_encoder.py` | 8 种笔画 ↔ 3-bit 算筭信号 |
-| 字典层 | `stroke_dictionary.py` | 130 个汉字的笔画/标签/算筭码多维度索引 |
-| 理解层 | `semantic_layer.py` | 字形比较、语义关联、关联图谱 |
-| 指令层 | `suanchou_isa.py` | 26 条算筭指令的完整 ISA 定义 |
-| 执行层 | `suanchou_vm.py` | 虚算筭拟机 + 算筭汇编器 + 执行引擎 |
-| 应用层 | `suanchou_search.py` | 算筭码搜索引擎 + 可视化流水线 |
+| 层次  | 文件                         | 功能                     | <br />       |
+| --- | -------------------------- | ---------------------- | :----------- |
+| 物理层 | `counting_rod_computer.py` | — 和                    | 的定义，加减乘除、位运算 |
+| 编码层 | `stroke_encoder.py`        | 8 种笔画 ↔ 3-bit 算筭信号     | <br />       |
+| 字典层 | `stroke_dictionary.py`     | 130 个汉字的笔画/标签/算筭码多维度索引 | <br />       |
+| 理解层 | `semantic_layer.py`        | 字形比较、语义关联、关联图谱         | <br />       |
+| 指令层 | `suanchou_isa.py`          | 26 条算筭指令的完整 ISA 定义     | <br />       |
+| 执行层 | `suanchou_vm.py`           | 虚算筭拟机 + 算筭汇编器 + 执行引擎   | <br />       |
+| 应用层 | `suanchou_search.py`       | 算筭码搜索引擎 + 可视化流水线       | <br />       |
 
 ### 验证结果
 
@@ -60,17 +60,11 @@
 - **合体字流水线**：木 × 2 = 林（聚集），木 × 3 = 森（繁茂）——算筭码层面清晰可见
 - **算筭虚拟机**：支持循环、跳转、比较，执行了完整的算筭汇编程序
 
-### 一个朴素的心愿
-
-算筭码通用处理器不是个人能完成的事。现代芯片从设计到流片，涉及 EDA 工具链、光刻工艺、封装测试、指令集生态——这不是一个人、甚至不是一个团队能独立完成的工作。
-
-但思想不需要处理器才能活下去。
-
-如果你是这个方向的研究者，这套代码提供了「字形纳入计算框架」的一个干净的形式化基础。如果你在探索笔画级别的 NLP、字形增强的汉字嵌入、或者汉字的结构化表示——这里有一条不同于 Unicode + tokenizer 的路。
+##
 
 *「一阴一阳之谓道。」— 《周易·系辞》*
 
----
+***
 
 ## SuanChou Computer
 
@@ -88,21 +82,21 @@ The answer is: **Yes.** At the symbolic level, the channel is open.
 
 **3. "Understanding" can be modeled as computation.** Pattern matching → bitwise operations. Semantic association → index lookup. The entire cognitive pipeline can be simulated by counting-rod computation.
 
-**4. Counting-rod code is a native programming paradigm.** If data already lives as — and |, write programs that operate directly on those signals. No translation through integers, strings, or encodings. ROD_CHAR directly identifies characters. ROD_CMP directly compares glyphs. ROD_TAG directly queries semantics.
+**4. Counting-rod code is a native programming paradigm.** If data already lives as — and |, write programs that operate directly on those signals. No translation through integers, strings, or encodings. ROD\_CHAR directly identifies characters. ROD\_CMP directly compares glyphs. ROD\_TAG directly queries semantics.
 
 ### What This Project Is
 
-A complete proof-of-concept (~2500 lines of Python) demonstrating six layers:
+A complete proof-of-concept (\~2500 lines of Python) demonstrating six layers:
 
-| Layer | File | Description |
-|-------|------|-------------|
-| Physical | `counting_rod_computer.py` | — and | as fundamental units; all arithmetic & bitwise ops |
-| Encoding | `stroke_encoder.py` | 8 strokes ↔ 3-bit counting-rod signals |
-| Dictionary | `stroke_dictionary.py` | 130 characters with multi-dimensional indices |
-| Semantic | `semantic_layer.py` | Glyph comparison, semantic association, relation graphs |
-| ISA | `suanchou_isa.py` | 26-instruction SuanChou ISA definition |
-| VM | `suanchou_vm.py` | Virtual machine + assembler for native rod-code execution |
-| Application | `suanchou_search.py` | Search engine with interactive & visual pipeline modes |
+| Layer       | File                       | Description                                               | <br />                                             |
+| ----------- | -------------------------- | --------------------------------------------------------- | :------------------------------------------------- |
+| Physical    | `counting_rod_computer.py` | — and                                                     | as fundamental units; all arithmetic & bitwise ops |
+| Encoding    | `stroke_encoder.py`        | 8 strokes ↔ 3-bit counting-rod signals                    | <br />                                             |
+| Dictionary  | `stroke_dictionary.py`     | 130 characters with multi-dimensional indices             | <br />                                             |
+| Semantic    | `semantic_layer.py`        | Glyph comparison, semantic association, relation graphs   | <br />                                             |
+| ISA         | `suanchou_isa.py`          | 26-instruction SuanChou ISA definition                    | <br />                                             |
+| VM          | `suanchou_vm.py`           | Virtual machine + assembler for native rod-code execution | <br />                                             |
+| Application | `suanchou_search.py`       | Search engine with interactive & visual pipeline modes    | <br />                                             |
 
 ### Verifications
 
@@ -113,17 +107,11 @@ A complete proof-of-concept (~2500 lines of Python) demonstrating six layers:
 - **Compound characters**: 木 × 2 = 林 (aggregation), 木 × 3 = 森 (density) — visible as rod-code repetition
 - **SuanChou VM**: Executes assembly with loops, branches, and comparisons
 
-### A Humble Hope
-
-A SuanChou general-purpose processor is beyond any single person's reach. Modern chip design involves EDA toolchains, lithography, packaging, testing, and instruction-set ecosystems — none of which an individual can build alone.
-
-But an idea doesn't need a processor to live.
-
-If you're researching stroke-level NLP, glyph-enhanced Chinese embeddings, or structured representations of Chinese characters — this codebase offers a clean, formalized alternative to the Unicode + tokenizer pipeline. If you're just curious — run the demos and see for yourself what it feels like when a Chinese character becomes a computable object.
+##
 
 *"One yin, one yang — that is the Dao." — I Ching, Xi Ci*
 
----
+***
 
 ## Quick Start
 
@@ -168,6 +156,6 @@ suanchou_computer/
 
 MIT — use it, build on it, share it. If this project helps your research or inspires your work, a link back is appreciated but not required.
 
----
+***
 
 *The bridge between Chinese characters and computation is not a metaphor. It is an architecture waiting to be built.*
