@@ -12,7 +12,6 @@ build/
 # PyInstaller 构建产物
 suan.exe
 suan_os.exe
-wen.exe
 
 # Virtual environment
 venv/
