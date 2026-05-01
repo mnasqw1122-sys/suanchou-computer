@@ -1,161 +1,231 @@
-# SuanChou Computer / 算筭计算机
+# 算筭计算机
 
-> **Two states can express everything.**
-> **—  = ON (1)     |  = OFF (0)**
->
-> Bridging ancient Chinese counting rods and modern computing. Bridging Chinese characters and binary logic. A proof of concept that *glyph-level understanding can be modeled as computation*.
+> **一阴一阳之谓道。** ——《周易·系辞》
 
 ***
 
-[中文](#算筭计算机)   |   [English](#suanchou-computer)   |   [Quick Start](#quick-start)   |   [License](#license)
+## 思想的起点
 
-***
+> 既然古代中国用算筭（— 和 |）就能完成计算，而汉字又由笔画组成——那么能否用算筭来架起计算机与自然语言之间的桥梁？
 
-## 算筭计算机
-
-### 思想的起点
-
-> 既然古代中国用算筭（— 和 |）就能完成计算，而汉字又由笔画组成 —— 那么能否用算筭来架起计算机与自然语言之间的桥梁？
-
-这个问题的答案是：**可以。** 符号计算的通道是通的。
+这个问题的答案是：**可以。** 但答案背后的东西，远比「可以」两个字深远得多。
 
 ```
-古代算筭 (— / |)
-    → 二进制计算 (0 / 1)
-    → 汉字笔画编码 (横竖撇捺点折钩提 → 3-bit)
-    → 字形 ↔ 语义 映射
+古代算筭（— / |）
+    → 二进制计算（0 / 1）
+    → 汉字笔画编码（横竖撇捺点折钩提）
+    → 字形 ↔ 语义映射
     → 算筭码直接编程
+    → 算筭三态（— / | / 〇）
+    → 非冯·诺依曼计算模型
 ```
 
-### 四个核心洞见
+这并不是一个「用中文重新解释二进制」的项目。它是**换一种思维方式，重新看计算——从算筭的思维出发，而不是从二进制的思维出发。**
 
-**1. 算筭与二进制同构。** — 和 | 就是两种状态，与现代计算机的 0 和 1 完全一致。古代中国人用算筭完成复杂计算这件事本身，就已经证明了「两种状态足以表达一切」。
+---
 
-**2. 汉字可以编码为算筭信号。** 永字八法的八种基本笔画——横竖撇捺点折钩提——每种用 3-bit 编码，任意汉字的「形」就可以无歧义地转化为一串 — 和 | 信号。字形不再是一种模糊的视觉印象，而是一段精确的、可计算的数据。
+## 核心洞见
 
-**3. 「理解」可以建模为「计算」。** 当人眼看到一个汉字时，视觉系统将其笔画转化为神经信号，大脑对这些信号进行模式匹配、联想、推断——这一整套「理解」流程，完全可以用算筭计算来模拟：模式匹配 → 位运算（AND/OR/XOR），语义联想 → 索引查找，关联推断 → 相似度计算。
+### 1. 算筭与二进制同构，但不在同一根轴上
 
-**4. 算筭码可以原生编程。** 如果数据本身就是 `—` 和 `|`，那就直接在这个层面上写程序。不需要先把算筭码翻译成整数、再翻译成字符串、再翻译回笔画——直接操作算筭信号。ROD\_CHAR 直接识别字符，ROD\_CMP 直接比较字形，ROD\_TAG 直接查询语义。
+— 和 | 是两种状态。它们可以对应 0 和 1。这是「同构」。
 
-### 代码做了什么
+但二进制思维看 0 和 1 是在**数值轴**上：每一位有数值权重（1, 2, 4, 8...），位与位之间是算术关系（进位、借位），操作是加、减、乘、除。
 
-这是一个完整的概念验证系统（\~2500 行 Python），包含六个层次：
+算筭思维看 — 和 | 是在**特征空间**里：每一位代表一种笔画（横竖撇捺点折钩提），位与位之间是并列关系（都有、都没有、彼有此无），操作是合（合并笔画）、交（共同笔画）、校（是否包含）、差（独有笔画）。
 
-| 层次  | 文件                         | 功能                     | <br />       |
-| --- | -------------------------- | ---------------------- | :----------- |
-| 物理层 | `counting_rod_computer.py` | — 和                    | 的定义，加减乘除、位运算 |
-| 编码层 | `stroke_encoder.py`        | 8 种笔画 ↔ 3-bit 算筭信号     | <br />       |
-| 字典层 | `stroke_dictionary.py`     | 130 个汉字的笔画/标签/算筭码多维度索引 | <br />       |
-| 理解层 | `semantic_layer.py`        | 字形比较、语义关联、关联图谱         | <br />       |
-| 指令层 | `suanchou_isa.py`          | 26 条算筭指令的完整 ISA 定义     | <br />       |
-| 执行层 | `suanchou_vm.py`           | 虚算筭拟机 + 算筭汇编器 + 执行引擎   | <br />       |
-| 应用层 | `suanchou_search.py`       | 算筭码搜索引擎 + 可视化流水线       | <br />       |
+| | 二进制 | 算筭码 |
+|---|---|---|
+| 位的意思 | 数值权重 | 笔画类型 |
+| 位间关系 | 算术（进位/借位） | 并列（都有/都无/互异） |
+| 基本操作 | 加、减、乘、除、移位 | 合、交、校、查、签 |
+| 信息结构 | 数轴上一个点 | 特征空间里一个位置 |
+| 相邻值关系 | 数值连续 | 结构无关 |
 
-### 验证结果
+**同一个晶体管，同一排 01，因为操作集不同，就变成了两种完全不同的计算。**
 
-- **算术运算**：算筭码完成 42 + 13 × 7 = 133，全流程以 — 和 | 表示
+算筭码真正的不可替代性在于：它让「笔画比对」在硬件层成为一个时钟周期的操作——就像加法在二进制计算机里是单周期的一样。用二进制计算机做笔画比对需要 LOAD→MASK→CMP，好几条指令。在算筭计算机里，它应该是物理级操作。
+
+### 2. 算筭三态：—、|、〇
+
+古代算筹记数法，从来就不只有两个状态：
+
+| 状态 | 符号 | 物理实现 | 含义 |
+|---|---|---|---|
+| 纵式 | | | 筹棒竖放（阳/有） |
+| 横式 | — | 筹棒横放（阴/无） |
+| 空位 | 〇 | **不摆筹棒** | 空/虚/该位无数值 |
+
+〇 不是「中间值」，是**空位**——此处无物。它不是数值的零，是存在性的无。《道德经》开篇：「无，名天地之始；有，名万物之母」——无和有不在同一根轴上。
+
+算筭码引入〇之后：
+
+```
+—  =  1  = 该笔画存在（实有）
+|  = -1  = 该笔画确定不存在（实无）
+〇  =  0  = 该笔画未定 / 不关心 / 空位（虚）
+```
+
+16 位算筭码从 2^16 = 65536 种状态跃升到 3^16 = 43,046,721 种状态。多出来的状态不是无用的——它表达了之前无法表达的东西：
+
+- 不知道这里有没有「横」——查询中
+- 不关心这里有没有「撇」——通配
+- 这个位置暂时留空——待填
+- 这个笔画在「将有将无」之间——未决态
+
+**而空位在运算中的表现，就是「无为」的计算表达：**
+
+```
+— 合 〇  →  —    （有合空 = 有，空不改变有）
+| 合 〇  →  |    （无合空 = 无，空不改变无）
+〇 合 〇  →  〇   （空合空 = 空）
+〇 合 —  →  —    （空合有 = 有，空不争）
+```
+
+### 3. 第三种状态的物理实现
+
+单根物理线天生就有三种状态——这是已经量产了五十年的技术：
+
+```
+高电平    →  —（有）
+低电平    →  |（无）
+高阻态    →  〇（空/不驱动）
+```
+
+现代计算机的总线大量使用**三态门**——多个设备共享同一根数据线，谁说话谁驱动，不说话的就高阻。三态在传输层是成熟技术。
+
+**储存层的三种方案：**
+
+| 方案 | 原理 | 现状 |
+|---|---|---|
+| 磁芯存储器 | 正向磁化 / 反向磁化 / 未磁化 | 苏联 Сетунь 用过，后被晶体管淘汰 |
+| 相变存储器 (PCM) | 晶态 / 非晶态 / 中间态 | Intel Optane 已商用 |
+| 忆阻器 | 阻值连续变化，天然多态 | 实验室阶段 |
+
+摩尔定律让二进制太便宜了，没人有动力做三态储存。但当摩尔定律走到尽头，存内计算和神经形态计算要求更丰富的状态表达时——〇会回来的。
+
+**或者，不走储存路线，走《易经》路线——用时间编码「势」：**
+
+```
+不在一个电平上存 〇
+而是用两个时刻之间的变化来表达：
+
+  位在时刻 T：是 —
+  位在时刻 T+1：变成 |
+  → 爻变（老阳→阴）
+
+  位在时刻 T：是 |
+  位在时刻 T+1：还是 |
+  → 爻定（少阴不变）
+```
+
+两个晶体管 + 一个异或门 → 一个「爻单元」。不需要新物理，数字电路的标准边沿检测器就能做到。
+
+### 4. 思维方式决定出路
+
+1945 年，ENIAC 团队面对同样的电子管、同样的电路、同样的物理限制。所有西方工程师在想「怎么用电路做算术」。而一位中国科学家——**朱传榘**（Jeffrey Chuan Chu）——在想「怎么用阴阳两种状态表达一切逻辑」。
+
+**他为 ENIAC 设计了二进制逻辑——第一台通用计算机的核心「大脑」。**
+
+这不是一个补充性的贡献。没有逻辑设计，ENIAC 只是一台快速的计算器，不会成为通用计算机。而他的逻辑设计，根植于《易经》两千年前就铺好的思维轨道。
+
+但这项贡献被隐藏了超过三十五年。冯·诺依曼发表了 EDVAC 报告，署名只有他自己。朱传榘的名字从计算机诞生史中消失了——直到 1980 年代才被重新发现。
+
+**这意味着什么？**
+
+当真正的发明人——以及他的思维方式——被从历史中抹去时，后来的人只能看到「计算机这样诞生了」这个结果，却不知道「为什么能诞生」这个原因。于是一代又一代人沿着冯·诺依曼架构走下去，不知道曾经存在过另一条路。
+
+**这就是这个项目存在的根本驱动力：不是复古，是恢复演化的可能性。**
+
+如果中国人的思维方式一直参与着计算机的演化（而不是被排斥在外），世界会是什么样子？——这个项目就是「重新推演」那个过程的开始。
+
+### 5. 从算筭到非冯·诺依曼
+
+算筭的思维和冯·诺依曼架构并不天然匹配。冯·诺依曼架构假设：程序是指令序列，数据是被动操作对象，指令和数据共用总线。这是西方线性思维的产物。
+
+算筭的思维更接近**象思维**——不是「告诉计算机做什么」，而是「给出一个格局，让它自己演化到稳定状态」。
+
+项目中探索的非冯方向：
+
+| 模型 | 文件 | 核心思想 |
+|---|---|---|
+| 易象虚拟机 | `yijing_vm.py` | 用六十四卦非爻系计算，卦变即状态迁移 |
+| 象演引擎 | `xiang_yan.py` | 无指令，只有约束和能量最小化；格局自己演化到稳定 |
+
+---
+
+## 项目结构
+
+| 层次 | 文件 | 功能 |
+|---|---|---|
+| 物理层 | `counting_rod_computer.py` | — 和 | 的定义，算筭运算 |
+| 编码层 | `stroke_encoder.py` | 笔画 ↔ 算筭码 |
+| 字典层 | `stroke_dictionary.py` | 汉字笔画 / 算筭码多维度索引 |
+| 理解层 | `semantic_layer.py` | 字形比较、语义关联、关联图谱 |
+| 指令层 | `suanchou_isa.py` | 33 条算筭指令（22 条语言翻译，11 条原生：识校合交签查印显等） |
+| 执行层 | `suanchou_vm.py` | 算筭虚拟执行引擎 |
+| 操作系统 | `suan_os.py` | 算筭操作系统，运行 .suan 程序 |
+| 算筭字谱 | `suanchou_zupu.py` | 算筭字谱定义 |
+| 搜索层 | `suanchou_search.py` | 算筭码搜索引擎 |
+| 易象虚拟机 | `yijing_vm.py` | 基于易经的非冯计算模型 |
+| 象演引擎 | `xiang_yan.py` | 约束演化引擎 |
+
+---
+
+## 验证结果
+
+- **算术运算**：算筭码完成 42 + 13 × 7 = 133
 - **汉字编解码**：130 个汉字的笔画 ↔ 算筭码往返 100% 一致
-- **算筭码精确反查**：任意已收录汉字的算筭码输入 → 100% 精确命中该字
+- **算筭码精确反查**：任意已收录汉字的算筭码输入 → 100% 精确命中
 - **字形相似度**：木 vs 本 = 88.9%，木 vs 森 = 50%，符合直观
-- **合体字流水线**：木 × 2 = 林（聚集），木 × 3 = 森（繁茂）——算筭码层面清晰可见
-- **算筭虚拟机**：支持循环、跳转、比较，执行了完整的算筭汇编程序
+- **算筭虚拟执行**：支持循环、跳转、比较，完整算筭汇编程序
+- **算筭操作系统**：运行 .suan 程序，包含图形计算器等应用
+- **象演排序**：仅通过约束定义，32 元素自动排序；无需任何排序指令
 
-##
+---
 
-*「一阴一阳之谓道。」— 《周易·系辞》*
+## 算筭字谱指令示例
+
+```suan
+待算   0010011    ；等待条件
+校     0100000    ；比对笔画
+合     0011000    ；合并
+交     0001100    ；交集
+查     0110000    ；查找
+签     0111000    ；标记
+印     1000000    ；输出
+显     1001000    ；显示
+行     ——|       ；执行
+停     |——       ；停止
+```
+
+---
+
+## 演进方向
+
+1. **算筭三态实现**：在 VM 层引入 〇（空位），升级合/交/校/查操作，支持通配和未决态
+2. **势寄存器**：引入「元亨利贞」四级势态，同一个算筭码在不同势下呈现不同语义
+3. **物理映射研究**：差分信号线 → 三态编码；忆阻器/PCM 的多态储存可能性
+4. **象演深化**：从排序到模式补全、生成、推理——无指令计算范式的完整探索
+5. **算筭OS 扩展**：更多 .suan 原生应用
+
+---
+
+## 哲学根基
+
+> 「易有太极，是生两仪，两仪生四象，四象生八卦。」——《周易·系辞》
+
+> 「天下万物生于有，有生于无。」——《道德经》第四十章
+
+> 「形而上者谓之道，形而下者谓之器。」——《周易·系辞》
+
+**算筭计算机不只是一个工程实验。它试图回答一个被埋没了超过三十五年的问题：如果那个为 ENIAC 设计了核心逻辑的中国人——朱传榘——的思维方式没有被历史抹去，计算机会发展成什么样子？**
+
+这不是为了争谁先谁后。而是恢复一条被中断的思维传统：从伏羲画卦、周文王演易、莱布尼茨发现二进制与六十四卦的对应，到朱传榘在 ENIAC 用阴阳逻辑实现通用计算——这条线曾经是连续的，然后断了。
+
+**这个项目，就是补上那个断点。**
 
 ***
 
-## SuanChou Computer
-
-### Where the Idea Comes From
-
-> If ancient China could compute using counting rods (— and |), and Chinese characters are made of strokes — can counting rods bridge the gap between computers and natural language?
-
-The answer is: **Yes.** At the symbolic level, the channel is open.
-
-### Four Core Insights
-
-**1. Counting rods are isomorphic to binary.** — and | are just two states, identical to 0 and 1. The fact that ancient Chinese mathematicians completed complex calculations with counting rods is itself proof that *two states are sufficient to express anything*.
-
-**2. Chinese characters can be encoded as counting-rod signals.** The eight basic strokes (horizontal, vertical, left-falling, right-falling, dot, bend, hook, rising) each encoded in 3 bits. Any Chinese character's *shape* can be losslessly converted into a string of — and | signals.
-
-**3. "Understanding" can be modeled as computation.** Pattern matching → bitwise operations. Semantic association → index lookup. The entire cognitive pipeline can be simulated by counting-rod computation.
-
-**4. Counting-rod code is a native programming paradigm.** If data already lives as — and |, write programs that operate directly on those signals. No translation through integers, strings, or encodings. ROD\_CHAR directly identifies characters. ROD\_CMP directly compares glyphs. ROD\_TAG directly queries semantics.
-
-### What This Project Is
-
-A complete proof-of-concept (\~2500 lines of Python) demonstrating six layers:
-
-| Layer       | File                       | Description                                               | <br />                                             |
-| ----------- | -------------------------- | --------------------------------------------------------- | :------------------------------------------------- |
-| Physical    | `counting_rod_computer.py` | — and                                                     | as fundamental units; all arithmetic & bitwise ops |
-| Encoding    | `stroke_encoder.py`        | 8 strokes ↔ 3-bit counting-rod signals                    | <br />                                             |
-| Dictionary  | `stroke_dictionary.py`     | 130 characters with multi-dimensional indices             | <br />                                             |
-| Semantic    | `semantic_layer.py`        | Glyph comparison, semantic association, relation graphs   | <br />                                             |
-| ISA         | `suanchou_isa.py`          | 26-instruction SuanChou ISA definition                    | <br />                                             |
-| VM          | `suanchou_vm.py`           | Virtual machine + assembler for native rod-code execution | <br />                                             |
-| Application | `suanchou_search.py`       | Search engine with interactive & visual pipeline modes    | <br />                                             |
-
-### Verifications
-
-- **Arithmetic**: 42 + 13 × 7 = 133, computed entirely with — and |
-- **Round-trip encoding**: All 130 characters encode/decode losslessly
-- **Exact rod lookup**: Any stored character's rod code → 100% hit rate
-- **Glyph similarity**: 木 vs 本 = 88.9%, 木 vs 森 = 50% — matches intuition
-- **Compound characters**: 木 × 2 = 林 (aggregation), 木 × 3 = 森 (density) — visible as rod-code repetition
-- **SuanChou VM**: Executes assembly with loops, branches, and comparisons
-
-##
-
-*"One yin, one yang — that is the Dao." — I Ching, Xi Ci*
-
-***
-
-## Quick Start
-
-```bash
-# Navigate to the project directory
-cd suanchou_computer
-
-# Interactive mode (explore characters by stroke/rod code)
-py main.py --interactive
-
-# Full pipeline demo (rod computation + VM execution + search engine)
-py suanchou_search.py --all
-
-# Interactive search engine (query by stroke, tag, radical, similarity, rod code)
-py suanchou_search.py -i
-
-# SuanChou VM execution demo (running assembly programs)
-py suanchou_vm.py
-
-# Efficiency analysis report
-py efficiency_analysis.py
-```
-
-## Project Structure
-
-```
-suanchou_computer/
-├── counting_rod_computer.py   # The core: arithmetic & logic on — and |
-├── stroke_encoder.py          # Stroke → 3-bit → rod signals
-├── stroke_dictionary.py       # 130-character stroke/semantic dictionary
-├── semantic_layer.py          # Similarity, comparison, relation graphs
-├── suanchou_isa.py            # 26-instruction ISA definition
-├── suanchou_vm.py             # VM + assembler for native rod-code execution
-├── suanchou_search.py         # Search engine + visual pipeline demo
-├── extended_strokes.py        # 130-character stroke database
-├── efficiency_analysis.py     # Theoretical vs. practical efficiency report
-├── main.py                    # Main demo entry point
-└── README.md                  # This file
-```
-
-## License
-
-MIT — use it, build on it, share it. If this project helps your research or inspires your work, a link back is appreciated but not required.
-
-***
-
-*The bridge between Chinese characters and computation is not a metaphor. It is an architecture waiting to be built.*
+*「一阴一阳之谓道。继之者善也，成之者性也。」*
+和deepseek的对话
